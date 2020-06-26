@@ -6,7 +6,7 @@ const Terminal = ({userData, selected}) => {
 
     return (
         <div className="window">
-            <div classname="title-bar">
+            <div className="title-bar">
                 <div className="buttons">
                     <div className="mac-btn close" />
                     <div className="mac-btn minimize" />

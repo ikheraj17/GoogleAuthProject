@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require("cors");
 const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const dotenv = require('dotenv').config();
 const app = express();
 app.use(cors());
@@ -20,7 +20,7 @@ passport.deserializeUser((user, cb) => {
 passport.use(new GoogleStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: 'http://localhost:3000/auth/google/callback'
+    callbackURL: '/auth/google/callback'
 }, 
     (accessToken, refreshToken, profile, cb) => {
         console.log(JSON.stringify(profile));
@@ -33,8 +33,16 @@ app.use(express.static(__dirname + '/../public'));
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
 
 app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/'}), (req, res) => {
-    res.redirect('/profile');
+    res.redirect('/pages/profile');
 });
+
+app.get('/pages/*', async (req, res) => {
+    await res.sendFile(`${process.cwd()}/public/index.html`, (err) => {
+        if (err) {
+            res.status(500).send(err)
+        }
+    })
+  });
 
 app.get('/user', (req, res) => {
     console.log('getting user data');
@@ -47,6 +55,6 @@ app.get('/auth/logout', (req, res) => {
     res.redirect('/');
 })
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`));

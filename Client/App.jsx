@@ -15,7 +15,7 @@ const App = () => {
        <Router history={history}>
            <UserProvider>
                <Route path='/' component={MenuBar} />
-               <Route path='/profile' component={Profile} />
+               <Route path="/pages/profile" component={Profile} />
            </UserProvider>
            <Route path='/' exact component={Home} />
        </Router>
